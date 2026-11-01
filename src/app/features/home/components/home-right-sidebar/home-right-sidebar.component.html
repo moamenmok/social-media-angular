@@ -1,0 +1,119 @@
+<aside class="h-fit xl:sticky xl:top-21">
+  <div class="overflow-hidden rounded-2xl border border-brand-100 bg-white shadow-sm">
+    <div class="h-1 bg-gradient-to-r from-brand-300 via-brand to-brand-800"></div>
+
+    <div class="p-3 sm:p-4">
+      <!-- header -->
+      <div class="mb-3 flex items-center gap-2.5">
+        <span class="grid size-8 place-items-center rounded-lg bg-brand-50 text-brand">
+          <i class="fa-solid fa-user-group text-sm"></i>
+        </span>
+        <h3 class="text-base font-extrabold text-slate-900">Suggested Friends</h3>
+      </div>
+
+      <!-- search -->
+      <div class="relative mb-3">
+        <i
+          class="fa-solid fa-magnifying-glass pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400"
+        ></i>
+        <input
+          type="text"
+          placeholder="Search friends..."
+          class="w-full rounded-xl border border-brand-100 bg-brand-50/60 py-2 pl-9 pr-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-brand focus:bg-white focus:ring-2 focus:ring-brand/15"
+        />
+      </div>
+
+      <div
+        class="flex flex-col gap-2.5"
+        [class.max-h-96]="friends().length > 5"
+        [class.overflow-y-auto]="friends().length > 5"
+        [class.pr-1]="friends().length > 5"
+      >
+        @for (friend of friends(); track friend._id) {
+          <div
+            class="flex items-center justify-between gap-2 rounded-xl border border-brand-100 bg-white p-2.5 transition hover:border-brand-300 hover:shadow-md hover:shadow-brand/10"
+          >
+            <button
+              type="button"
+              class="flex min-w-0 flex-1 items-center gap-3 rounded-lg p-1 text-left transition hover:bg-brand-50"
+            >
+              <span class="shrink-0 rounded-full bg-gradient-to-tr from-brand to-brand-300 p-0.5">
+                @if (friend.photo) {
+                  <img
+                    [alt]="friend.name"
+                    [src]="friend.photo"
+                    loading="lazy"
+                    class="size-11 rounded-full border-2 border-white bg-brand-50 object-cover"
+                  />
+                } @else {
+                  <span
+                    class="grid size-11 place-items-center rounded-full border-2 border-white bg-brand-50 text-brand"
+                  >
+                    <i class="fa-solid fa-user"></i>
+                  </span>
+                }
+              </span>
+
+              <span class="block min-w-0">
+                <span class="block truncate text-sm font-bold text-slate-900 hover:underline">
+                  {{ friend.name }}
+                </span>
+                <span class="block truncate text-xs text-slate-500">@{{ friend.username }}</span>
+                <span
+                  class="mt-1 inline-flex items-center gap-1 rounded-full bg-brand-50 px-2 py-0.5 text-[11px] font-semibold text-brand-700"
+                >
+                  <i class="fa-solid fa-users text-[9px]"></i>
+                  {{ friend.followersCount }}
+                </span>
+              </span>
+            </button>
+
+            <button
+              type="button"
+              (click)="followAndUnfollowUser(friend._id)"
+              class="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-brand px-3 py-1.5 text-xs font-bold text-white shadow-sm transition hover:bg-brand-600 active:scale-95 disabled:opacity-60 motion-reduce:active:scale-100"
+            >
+              <i class="fa-solid fa-user-plus"></i>
+              Follow
+            </button>
+          </div>
+        } @empty {
+          <div
+            class="flex w-full flex-col items-center gap-2 rounded-xl border border-dashed border-brand-200 px-4 py-6 text-center"
+          >
+            <div class="flex gap-1.5" aria-hidden="true">
+              <span
+                class="size-2 animate-bounce rounded-full bg-brand motion-reduce:animate-none"
+              ></span>
+              <span
+                class="size-2 animate-bounce rounded-full bg-brand-400 [animation-delay:150ms] motion-reduce:animate-none"
+              ></span>
+              <span
+                class="size-2 animate-bounce rounded-full bg-brand-300 [animation-delay:300ms] motion-reduce:animate-none"
+              ></span>
+            </div>
+            <p class="text-sm font-bold text-slate-700">No suggestions yet</p>
+            <p class="text-xs text-slate-500">Check back soon.</p>
+          </div>
+        }
+      </div>
+
+      @if (hasMore() && friends().length > 0) {
+        <button
+          type="button"
+          (click)="showMore()"
+          [disabled]="loadingMore()"
+          class="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-brand-200 px-3 py-2 text-sm font-bold text-brand transition hover:bg-brand-50 disabled:opacity-60"
+        >
+          @if (loadingMore()) {
+            <i class="fa-solid fa-spinner fa-spin text-xs"></i>
+            Loading...
+          } @else {
+            View more
+            <i class="fa-solid fa-chevron-down text-[10px]"></i>
+          }
+        </button>
+      }
+    </div>
+  </div>
+</aside>

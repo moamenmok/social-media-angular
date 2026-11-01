@@ -1,3 +1,181 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import 'flowbite/src/themes/default';
+@import 'ngx-toastr/toastr';
+
+@source "../node_modules/flowbite";
+
+:root {
+  --main-color: #c71f37;
+  --secondary-color: #f0f2f5;
+}
+@theme {
+  --color-brand-50: #fcf4f5;
+  --color-brand-100: #f8e4e7;
+  --color-brand-200: #f2c9cf;
+  --color-brand-300: #e9a5af;
+  --color-brand-400: #db6d7d;
+  --color-brand: #c71f37;
+  --color-brand-600: #ad1b30;
+  --color-brand-700: #901628;
+  --color-brand-800: #721220;
+  --color-brand-900: #550d18;
+  --color-brand-950: #380910;
+}
+
+body {
+  background: var(--secondary-color);
+}
+
+.ccenter {
+  @apply flex items-center justify-center;
+}
+.bcenter {
+  @apply flex items-center justify-between;
+}
+.about-card {
+  @apply border border-neutral-600 rounded-xl  bg-neutral-900/20;
+}
+.btn-primary {
+  @apply bg-linear-to-br from-brand to-brand-700  py-4 px-8 text-white cursor-pointer;
+}
+.btn-secondary {
+  @apply bg-transparent border border-[#262626] py-4 px-8 text-white;
+}
+.navs-tabs-btn {
+  @apply px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 bg-[#161616] text-neutral-400 border border-[#262626] hover:border-orange-500/30;
+}
+.nav-active {
+  padding: 0.625rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 300ms;
+
+  background-image: linear-gradient(to right, var(--color-brand), var(--color-brand-600));
+  color: white !important;
+}
+.nav-mobile-active {
+  @apply px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 border-[#f973164d] bg-orange-400/10 text-white;
+}
+
+.side-line {
+  @apply h-0.5 w-8 bg-linear-to-r from-orange-500 to-yellow-500 rounded-full;
+}
+
+::selection {
+  color: #fff;
+  background-color: var(--main-color);
+}
+
+.main-border {
+  border: 0.8px solid #e9a5af;
+}
+.ngx-spinner-overlay > [class*='la-'] {
+  display: none !important;
+}
+.ngx-spinner-overlay .loading-text {
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.egm-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.egm-loader .stage {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fcf4f5 0%, #ffffff 70%);
+}
+
+.egm-loader .stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(199, 31, 55, 0) 0%, #c71f37 100%);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+  animation: egm-spin 1.4s linear infinite;
+}
+@keyframes egm-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.egm-logo {
+  width: 104px;
+  filter: drop-shadow(0 8px 16px rgba(199, 31, 55, 0.18));
+}
+
+.egm-logo .fill {
+  animation: egm-fill 2.2s ease-in-out infinite alternate;
+}
+@keyframes egm-fill {
+  from {
+    transform: translateY(1010px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.egm-logo .dot {
+  fill: #c71f37;
+  animation: egm-dot 1.2s ease-in-out infinite;
+}
+.egm-logo .d2 {
+  animation-delay: 0.15s;
+}
+.egm-logo .d3 {
+  animation-delay: 0.3s;
+}
+@keyframes egm-dot {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+  30% {
+    transform: translateY(-40px);
+    opacity: 1;
+  }
+}
+
+.egm-name {
+  margin: 0;
+  padding-left: 0.5em;
+  color: #550d18;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.5em;
+}
+.egm-sub {
+  margin: -8px 0 0;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .egm-loader .stage::before,
+  .egm-logo .fill,
+  .egm-logo .dot {
+    animation: none;
+  }
+  .egm-logo .fill {
+    transform: translateY(0);
+  }
+}

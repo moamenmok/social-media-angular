@@ -1,0 +1,56 @@
+<div class="flex min-h-[calc(100vh-5rem)] items-center justify-center p-4">
+  <section
+    class="relative w-full max-w-3xl overflow-hidden rounded-3xl bg-gradient-to-br from-brand-950 via-brand-800 to-brand px-6 py-14 text-center text-white shadow-xl sm:py-20"
+  >
+    <div
+      class="absolute inset-0 opacity-60 [background-image:radial-gradient(circle,rgba(255,255,255,.22)_1.5px,transparent_1.5px)] [background-size:22px_22px]"
+    ></div>
+    <div class="blob absolute -left-16 top-10 size-44 rounded-full bg-brand-300/20 blur-3xl"></div>
+    <div
+      class="blob blob-2 absolute -right-10 -top-10 size-60 rounded-full bg-brand-400/25 blur-3xl"
+    ></div>
+
+    <div class="relative">
+      <div
+        class="flex items-center justify-center gap-2 text-7xl font-black leading-none sm:gap-4 sm:text-9xl"
+        aria-label="404"
+      >
+        <span class="fade-up">4</span>
+
+        <span
+          class="wobble grid size-16 place-items-center rounded-full bg-white/15 text-3xl backdrop-blur sm:size-28 sm:text-5xl"
+        >
+          <i class="fa-solid fa-compass"></i>
+        </span>
+
+        <span class="fade-up delay-1">4</span>
+      </div>
+
+      <h1 class="fade-up delay-2 mt-6 text-2xl font-extrabold sm:text-3xl">Lost in the feed?</h1>
+      <p class="fade-up delay-3 mx-auto mt-2 max-w-sm text-sm text-white/75 sm:text-base">
+        The page you're looking for doesn't exist or has been moved.
+      </p>
+
+      <div class="fade-up delay-4 mt-8 flex flex-col gap-2 sm:flex-row sm:justify-center">
+        <a
+          routerLink="/home"
+          class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-brand shadow-sm transition hover:bg-brand-50 active:scale-95"
+        >
+          <i class="fa-solid fa-house text-xs"></i>
+          Back to home
+        </a>
+
+        <button
+          type="button"
+          (click)="goBack()"
+          class="group inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-white/10"
+        >
+          <i
+            class="fa-solid fa-arrow-left text-xs transition-transform duration-300 group-hover:-translate-x-1"
+          ></i>
+          Go back
+        </button>
+      </div>
+    </div>
+  </section>
+</div>

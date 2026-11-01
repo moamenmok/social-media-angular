@@ -1,0 +1,293 @@
+<div class="border-t border-brand-100 bg-brand-50/40 px-3 py-4 sm:px-4">
+  <!-- header -->
+  <div
+    class="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-brand-100 bg-white px-3 py-2"
+  >
+    <div class="flex items-center gap-2">
+      <i class="fa-regular fa-comments text-brand"></i>
+      <h3 class="text-sm font-extrabold text-slate-800">Comments</h3>
+      <span class="rounded-full bg-brand-50 px-2 py-0.5 text-[11px] font-bold text-brand">
+        {{ postComments().length }}
+      </span>
+    </div>
+
+    <div class="relative">
+      <select
+        aria-label="Sort comments"
+        class="appearance-none rounded-lg border border-brand-100 bg-white py-1.5 pl-2.5 pr-7 text-xs font-bold text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
+      >
+        <option value="relevant">Most relevant</option>
+        <option value="newest">Newest</option>
+      </select>
+      <i
+        class="fa-solid fa-chevron-down pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400"
+      ></i>
+    </div>
+  </div>
+
+  <!-- comments list -->
+  <ul class="space-y-3">
+    @if (isLoading()) {
+      <div class="rounded-2xl border border-brand-100 bg-white p-8 text-center">
+        <i class="fa-solid fa-spinner fa-spin text-2xl text-brand"></i>
+        <p class="mt-3 text-sm text-slate-500">Loading saved posts...</p>
+      </div>
+    } @else {
+      @for (comment of postComments(); track comment._id) {
+        <li class="flex items-start gap-2 sm:gap-3">
+          <!-- avatar with brand ring -->
+          <span
+            class="mt-0.5 shrink-0 rounded-full bg-gradient-to-tr from-brand to-brand-300 p-0.5"
+          >
+            @if (comment.commentCreator.photo) {
+              <img
+                [src]="comment.commentCreator.photo"
+                [alt]="comment.commentCreator.name"
+                class="block size-8 rounded-full border-2 border-white bg-brand-50 object-cover sm:size-10"
+              />
+            } @else {
+              <span
+                class="grid size-8 place-items-center rounded-full border-2 border-white bg-brand-50 text-xs text-brand sm:size-10"
+              >
+                <i class="fa-solid fa-user"></i>
+              </span>
+            }
+          </span>
+
+          <div class="min-w-0 flex-1">
+            <div
+              class="inline-block max-w-full rounded-2xl rounded-tl-sm border border-brand-100 bg-white px-3 py-2 shadow-sm"
+            >
+              <p class="truncate text-xs font-bold text-slate-900 sm:text-sm">
+                {{ comment.commentCreator.name }}
+              </p>
+              <p class="text-[11px] text-slate-500">
+                {{ comment.commentCreator.username }} · {{ comment.createdAt | timeAgo }}
+              </p>
+
+              @if (editingId() === comment._id) {
+                <textarea
+                  rows="2"
+                  [value]="editText()"
+                  (input)="onEditInput($event)"
+                  (keydown.escape)="cancelEdit()"
+                  class="mt-1 w-full min-w-[220px] resize-none rounded-lg border border-brand-100 bg-brand-50/40 px-2 py-1.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/15"
+                ></textarea>
+                <div class="mt-1 flex justify-end gap-2 text-xs font-bold">
+                  <button
+                    type="button"
+                    (click)="cancelEdit()"
+                    class="text-slate-500 hover:underline"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    (click)="saveEdit(comment)"
+                    class="text-brand hover:underline"
+                  >
+                    Save
+                  </button>
+                </div>
+              } @else {
+                @if (comment.content) {
+                  <p class="mt-1 whitespace-pre-wrap break-words text-sm text-slate-800">
+                    {{ comment.content }}
+                  </p>
+                }
+              }
+            </div>
+
+            <!-- actions -->
+            <div class="mt-1 flex items-center justify-between px-1">
+              <div class="flex items-center gap-3 sm:gap-4">
+                <span class="text-xs font-semibold text-slate-400">
+                  {{ comment.createdAt | timeAgo }}
+                </span>
+
+                <button
+                  type="button"
+                  (click)="toggleLike(comment)"
+                  class="inline-flex items-center gap-1 text-xs font-semibold transition hover:text-brand"
+                  [class]="isLiked(comment) ? 'text-brand' : 'text-slate-500'"
+                >
+                  <i [class]="isLiked(comment) ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"></i>
+                  Like
+                  <span class="text-slate-400">({{ comment.likes.length }})</span>
+                </button>
+
+                <button
+                  type="button"
+                  class="text-xs font-semibold text-slate-500 hover:text-brand hover:underline"
+                >
+                  Reply
+                </button>
+              </div>
+
+              @if (canDelete(comment)) {
+                <div class="relative">
+                  <button
+                    type="button"
+                    (click)="toggleMenu(comment._id)"
+                    aria-label="Comment options"
+                    class="grid size-7 place-items-center rounded-full text-slate-500 transition hover:bg-brand-50 hover:text-brand"
+                  >
+                    <i class="fa-solid fa-ellipsis text-sm"></i>
+                  </button>
+
+                  @if (openMenuId() === comment._id) {
+                    <div class="fixed inset-0 z-10" (click)="closeMenu()"></div>
+                    <div
+                      class="absolute right-0 top-full z-20 w-40 rounded-xl border border-brand-100 bg-white p-1 shadow-lg"
+                    >
+                      <ul class="text-sm text-slate-700">
+                        @if (isOwner(comment)) {
+                          <li>
+                            <button
+                              type="button"
+                              (click)="startEdit(comment)"
+                              class="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 hover:bg-brand-50 hover:text-brand"
+                            >
+                              <i class="fa-regular fa-pen-to-square w-4 text-center"></i>
+                              Edit
+                            </button>
+                          </li>
+                        }
+                        <li>
+                          <button
+                            type="button"
+                            (click)="askDelete(comment)"
+                            class="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-brand-700 hover:bg-brand-50"
+                          >
+                            <i class="fa-regular fa-trash-can w-4 text-center"></i>
+                            Delete
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </li>
+      } @empty {
+        <div
+          class="flex flex-col items-center gap-2 rounded-xl border border-dashed border-brand-200 bg-white px-4 py-8 text-center"
+        >
+          <p class="text-sm font-bold text-slate-700">No comments yet</p>
+          <p class="text-xs text-slate-500">Be the first to say something.</p>
+        </div>
+      }
+    }
+  </ul>
+
+  <!-- composer -->
+  <form (submit)="formSubmit($event)" class="mt-4 flex items-start gap-2 sm:gap-3">
+    <span class="shrink-0 rounded-full bg-gradient-to-tr from-brand to-brand-300 p-0.5">
+      @if (userData().photo) {
+        <img
+          [src]="userData().photo"
+          [alt]="userData().name"
+          class="block size-8 rounded-full border-2 border-white bg-brand-50 object-cover sm:size-9"
+        />
+      } @else {
+        <span
+          class="grid size-8 place-items-center rounded-full border-2 border-white bg-brand-50 text-xs text-brand sm:size-9"
+        >
+          <i class="fa-solid fa-user"></i>
+        </span>
+      }
+    </span>
+
+    <div
+      class="w-full rounded-2xl border border-brand-100 bg-white px-2.5 py-1.5 transition focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/15"
+    >
+      <textarea
+        rows="1"
+        [value]="commentText()"
+        (input)="onCommentInput($event)"
+        placeholder="Write a comment..."
+        class="max-h-36 min-h-10 w-full resize-none bg-transparent px-2 py-1.5 text-sm leading-5 outline-none placeholder:text-slate-400"
+      ></textarea>
+
+      @if (imgRender()) {
+        <div class="relative mx-2 mb-1 w-fit">
+          <img [src]="imgRender()" alt="Preview" class="max-h-32 rounded-xl object-cover" />
+          <button
+            type="button"
+            (click)="restImg()"
+            aria-label="Remove image"
+            class="absolute -right-2 -top-2 grid size-6 place-items-center rounded-full bg-slate-800 text-xs text-white hover:bg-slate-700"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      }
+
+      <div class="mt-1 flex items-center justify-between">
+        <label
+          aria-label="Add image"
+          class="inline-flex cursor-pointer items-center justify-center rounded-full p-2 text-slate-500 transition hover:bg-brand-50 hover:text-brand"
+        >
+          <i class="fa-regular fa-image"></i>
+          <input
+            #fileInput
+            type="file"
+            accept="image/*"
+            (change)="selectImage($event)"
+            class="hidden"
+          />
+        </label>
+
+        <button
+          type="submit"
+          [disabled]="!canSend()"
+          aria-label="Send comment"
+          class="grid size-9 place-items-center rounded-full bg-brand text-white shadow-sm transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:bg-brand-200 disabled:shadow-none"
+        >
+          @if (sending()) {
+            <i class="fa-solid fa-spinner fa-spin text-sm"></i>
+          } @else {
+            <i class="fa-solid fa-paper-plane text-sm"></i>
+          }
+        </button>
+      </div>
+    </div>
+  </form>
+  <!-- ============ Delete modal (Flowbite) ============ -->
+  <div
+    #deleteModalEl
+    tabindex="-1"
+    aria-hidden="true"
+    class="fixed inset-0 z-50 hidden items-center justify-center overflow-y-auto overflow-x-hidden p-4"
+  >
+    <div class="relative w-full max-w-sm">
+      <div class="rounded-2xl border border-brand-100 bg-white p-5 shadow-xl">
+        <div class="mb-3 grid size-11 place-items-center rounded-full bg-brand-50 text-brand">
+          <i class="fa-regular fa-trash-can"></i>
+        </div>
+
+        <h3 class="text-base font-extrabold text-slate-900">Delete comment?</h3>
+        <p class="mt-1 text-sm text-slate-500">This can't be undone.</p>
+
+        <div class="mt-5 flex justify-end gap-2">
+          <button
+            type="button"
+            (click)="cancelDelete()"
+            class="rounded-xl border border-brand-100 px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-brand-50"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            (click)="confirmDelete()"
+            class="rounded-xl bg-brand px-4 py-2 text-sm font-bold text-white transition hover:bg-brand-600"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

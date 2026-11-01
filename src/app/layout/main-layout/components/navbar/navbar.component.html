@@ -1,0 +1,184 @@
+<header class="sticky top-0 z-40 border-b border-slate-200/90 bg-white/95 backdrop-blur">
+  <div class="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2 sm:gap-3 sm:px-4">
+    <!-- Logo -->
+    <div class="flex gap-2.5 items-center">
+      <div class="block">
+        <img src="/assets/logo-m.svg" alt="EGM Posts" class="size-10 rounded-xl object-cover" />
+      </div>
+      <div class="hidden sm:block">
+        <h1 class="text-xl font-bold text-brand m-0 sm:block">EGM</h1>
+      </div>
+    </div>
+    <!-- Navigation -->
+    <nav class="lg:flex min-w-0 items-center gap-1 overflow-x-auto p-1 hidden">
+      <!-- Feed -->
+      <a
+        routerLink="/home"
+        routerLinkActive="nav-active "
+        aria-current="page"
+        class="flex items-center gap-2 rounded-xl text-slate-600 bg-white px-3 py-2 text-sm font-extrabold transition hover:bg-white sm:px-4"
+      >
+        <i class="fa-solid fa-house text-lg"></i>
+        <span class="hidden sm:inline">Home</span>
+      </a>
+
+      <!-- Profile -->
+      <a
+        routerLinkActive=" nav-active "
+        routerLink="/profile"
+        class="flex items-center gap-2 text-slate-600 rounded-xl px-3 py-2 text-sm font-extrabold transition hover:bg-white hover:text-slate-900 sm:px-4"
+      >
+        <i class="fa-regular fa-user text-lg"></i>
+        <span class="hidden sm:inline">Profile</span>
+      </a>
+
+      <!-- Notifications -->
+      <a
+        routerLinkActive=" nav-active "
+        routerLink="/notification"
+        class="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-extrabold text-slate-600 transition hover:bg-white hover:text-slate-900 sm:px-4"
+      >
+        <i class="fa-regular fa-bell text-lg"></i>
+        <span class="hidden sm:inline">Notifications</span>
+      </a>
+    </nav>
+
+    <button
+      id="dropdownAvatarNameButton"
+      data-dropdown-toggle="dropdownAvatarName"
+      class="flex items-center text-sm pe-1 font-medium text-heading rounded-full hover:text-fg-brand md:me-0 focus:ring-4 focus:ring-neutral-tertiary"
+      type="button"
+    >
+      <span class="sr-only">Open user menu</span>
+
+      <img class="size-9 me-2 rounded-full" [src]="userData().photo" [alt]="userData().name" />
+      <span class="hidden lg:inline"> {{ userData().name }} </span>
+      <svg
+        class="w-4 h-4 ms-2"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="m19 9-7 7-7-7"
+        />
+      </svg>
+    </button>
+
+    <!-- Dropdown menu -->
+    <div
+      id="dropdownAvatarName"
+      class="z-10 hidden bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-72"
+    >
+      <div class="p-2">
+        <div
+          class="flex items-center px-2.5 p-2 space-x-1.5 text-sm bg-neutral-secondary-strong rounded"
+        >
+          <img class="w-8 h-8 rounded-full" [src]="userData().photo" [alt]="userData().name" />
+          <div class="text-sm">
+            <div class="font-medium text-heading">{{ userData().name }}</div>
+            <div class="truncate text-body">{{ userData().username }}</div>
+          </div>
+          <span
+            class="bg-brand-softer border border-brand-subtle text-fg-brand-strong text-xs font-medium px-1.5 py-0.5 rounded ms-auto"
+            >PRO</span
+          >
+        </div>
+      </div>
+      <ul
+        class="px-2 pb-2 text-sm text-body font-medium"
+        aria-labelledby="dropdownAvatarNameButton"
+      >
+        <li>
+          <a
+            routerLink="/change-password"
+            class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
+          >
+            <svg
+              class="w-4 h-4 me-1.5"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-width="2"
+                d="M20 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6h-2m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4"
+              />
+            </svg>
+            Settings
+          </a>
+        </li>
+
+        <li
+          class="flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded mb-1.5"
+        >
+          <a href="#" class="inline-flex items-center">
+            <svg
+              class="w-4 h-4 me-1.5"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 21a9 9 0 0 1-.5-17.986V3c-.354.966-.5 1.911-.5 3a9 9 0 0 0 9 9c.239 0 .254.018.488 0A9.004 9.004 0 0 1 12 21Z"
+              />
+            </svg>
+            Dark mode
+          </a>
+          <label class="inline-flex items-center cursor-pointer ms-auto">
+            <input type="checkbox" value="" class="sr-only peer" />
+            <div
+              class="relative w-9 h-5 bg-neutral-quaternary peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-soft dark:peer-focus:ring-brand-soft rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand"
+            ></div>
+            <span class="ms-3 text-sm font-medium text-heading sr-only">Toggle me</span>
+          </label>
+        </li>
+
+        <li>
+          <a
+            (click)="loggedoutNavbar()"
+            class="inline-flex items-center w-full p-2 text-fg-danger hover:bg-neutral-tertiary-medium rounded"
+          >
+            <svg
+              class="w-4 h-4 me-1.5"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"
+              />
+            </svg>
+            Sign out
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</header>

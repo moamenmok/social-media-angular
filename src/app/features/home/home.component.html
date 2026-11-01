@@ -1,0 +1,13 @@
+<main class="mx-auto grid max-w-2xl gap-4 xl:max-w-none xl:grid-cols-[240px_minmax(0,1fr)_300px]">
+  <!-- ============ Left sidebar ============ -->
+  <app-home-left-sidebar class="hidden lg:block"></app-home-left-sidebar>
+
+  <!-- ============ Center column ============ -->
+  <section class="min-w-0 space-y-4">
+    <app-create-post (postCreated)="homeContent.getAllPosts()"></app-create-post>
+    <app-home-center-content #homeContent></app-home-center-content>
+  </section>
+
+  <!-- ============ Right sidebar ============ -->
+  <app-home-right-sidebar class="hidden lg:block"></app-home-right-sidebar>
+</main>

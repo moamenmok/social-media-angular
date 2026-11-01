@@ -1,0 +1,156 @@
+<div class="flex min-h-[calc(100vh-5rem)] items-center justify-center p-4">
+  <section
+    class="w-full max-w-full rounded-2xl border border-brand-100 bg-white p-5 shadow-sm sm:p-6 lg:max-w-2xl"
+  >
+    <div class="mb-5 flex items-center gap-3">
+      <span
+        class="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand"
+      >
+        <i class="fa-solid fa-key"></i>
+      </span>
+      <div>
+        <h1 class="text-xl font-extrabold text-slate-900 sm:text-2xl">Change Password</h1>
+        <p class="text-sm text-slate-500">Keep your account secure by using a strong password.</p>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="changePasswordForm" (ngSubmit)="onSubmit()" class="space-y-4" novalidate>
+      <label class="block">
+        <span class="mb-1.5 block text-sm font-bold text-slate-700">Current password</span>
+        <div class="relative">
+          <input
+            [type]="visible().currentPassword ? 'text' : 'password'"
+            formControlName="currentPassword"
+            placeholder="Enter current password"
+            class="w-full rounded-xl border bg-brand-50/50 py-2.5 pl-3 pr-10 text-sm text-slate-800 outline-none transition focus:bg-white focus:ring-2 focus:ring-brand/15"
+            [class]="
+              currentPassword.touched && currentPassword.invalid
+                ? 'border-red-300 focus:border-red-400'
+                : 'border-brand-100 focus:border-brand'
+            "
+          />
+          <button
+            type="button"
+            (click)="toggleVisibility('currentPassword')"
+            [attr.aria-label]="visible().currentPassword ? 'Hide password' : 'Show password'"
+            class="absolute right-2 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-slate-400 transition hover:bg-brand-50 hover:text-brand"
+          >
+            <i
+              [class]="visible().currentPassword ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'"
+            ></i>
+          </button>
+        </div>
+        @if (currentPassword.touched && currentPassword.hasError('required')) {
+          <span class="mt-1 block text-xs font-semibold text-red-500">
+            Current password is required.
+          </span>
+        }
+      </label>
+
+      <!-- New Password -->
+      <label class="block">
+        <span class="mb-1.5 block text-sm font-bold text-slate-700">New password</span>
+        <div class="relative">
+          <input
+            [type]="visible().newPassword ? 'text' : 'password'"
+            formControlName="newPassword"
+            placeholder="Enter new password"
+            class="w-full rounded-xl border bg-brand-50/50 py-2.5 pl-3 pr-10 text-sm text-slate-800 outline-none transition focus:bg-white focus:ring-2 focus:ring-brand/15"
+            [class]="
+              newPassword.touched && newPassword.invalid
+                ? 'border-red-300 focus:border-red-400'
+                : 'border-brand-100 focus:border-brand'
+            "
+          />
+          <button
+            type="button"
+            (click)="toggleVisibility('newPassword')"
+            [attr.aria-label]="visible().newPassword ? 'Hide password' : 'Show password'"
+            class="absolute right-2 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-slate-400 transition hover:bg-brand-50 hover:text-brand"
+          >
+            <i
+              [class]="visible().newPassword ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'"
+            ></i>
+          </button>
+        </div>
+
+        @if (newPassword.touched && newPassword.invalid) {
+          <span class="mt-1 block text-xs font-semibold text-red-500">
+            At least 8 characters with uppercase, lowercase, number, and special character.
+          </span>
+        } @else {
+          <span class="mt-1 block text-xs text-slate-500">
+            At least 8 characters with uppercase, lowercase, number, and special character.
+          </span>
+        }
+      </label>
+
+      <!-- Confirm Password -->
+      <label class="block">
+        <span class="mb-1.5 block text-sm font-bold text-slate-700">Confirm new password</span>
+        <div class="relative">
+          <input
+            [type]="visible().rePassword ? 'text' : 'password'"
+            formControlName="rePassword"
+            placeholder="Re-enter new password"
+            class="w-full rounded-xl border bg-brand-50/50 py-2.5 pl-3 pr-10 text-sm text-slate-800 outline-none transition focus:bg-white focus:ring-2 focus:ring-brand/15"
+            [class]="
+              rePassword.touched && rePassword.invalid
+                ? 'border-red-300 focus:border-red-400'
+                : 'border-brand-100 focus:border-brand'
+            "
+          />
+          <button
+            type="button"
+            (click)="toggleVisibility('rePassword')"
+            [attr.aria-label]="visible().rePassword ? 'Hide password' : 'Show password'"
+            class="absolute right-2 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-slate-400 transition hover:bg-brand-50 hover:text-brand"
+          >
+            <i [class]="visible().rePassword ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'"></i>
+          </button>
+        </div>
+
+        @if (rePassword.touched && rePassword.hasError('required')) {
+          <span class="mt-1 block text-xs font-semibold text-red-500">
+            Please confirm your new password.
+          </span>
+        } @else if (rePassword.touched && rePassword.hasError('mismatch')) {
+          <span class="mt-1 block text-xs font-semibold text-red-500">Passwords don't match.</span>
+        }
+      </label>
+
+      @if (errorMessage()) {
+        <p
+          class="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-600"
+        >
+          <i class="fa-solid fa-circle-exclamation mr-1"></i>
+          {{ errorMessage() }}
+        </p>
+      }
+
+      @if (successMessage()) {
+        <p
+          class="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700"
+        >
+          <i class="fa-solid fa-circle-check mr-1"></i>
+          {{ successMessage() }}
+        </p>
+      }
+
+      <button
+        type="submit"
+        [disabled]="changePasswordForm.invalid || isloading()"
+        class="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-brand-600 active:scale-[.99] disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        @if (isloading()) {
+          <i class="fa-solid fa-spinner fa-spin text-xs"></i>
+          Updating...
+        } @else {
+          <i class="fa-solid fa-lock text-xs"></i>
+          Update password
+        }
+      </button>
+    </form>
+  </section>
+</div>

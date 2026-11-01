@@ -1,0 +1,84 @@
+<form
+  #createPostForm
+  (submit)="formSubmit($event, createPostForm)"
+  class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+>
+  <div class="mb-3 flex items-start gap-3">
+    <img
+      id="user-avatar"
+      [alt]="userData().name"
+      class="h-11 w-11 rounded-full bg-slate-200 object-cover"
+      [src]="userData().photo"
+    />
+    <div class="flex-1">
+      <p id="user-name" class="text-base font-extrabold text-slate-900">{{ userData().name }}</p>
+      <div
+        class="mt-1 inline-flex items-center gap-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700"
+      >
+        <i class="fa-solid fa-earth-africa"></i>
+        <select
+          class="border-0 bg-transparent p-0 pr-6 text-xs focus:ring-0"
+          [formControl]="privacyInput"
+        >
+          <option value="public">Public</option>
+          <option value="following">Followers</option>
+          <option value="only_me">Only me</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <textarea
+    rows="4"
+    [formControl]="bodyInput"
+    placeholder="What's on your mind?..."
+    class="w-full rounded-2xl border border-slate-200 bg-brand-50 px-4 py-3 text-[17px] leading-relaxed text-slate-800 outline-none transition focus:border-brandtext-brand focus:bg-white focus:ring-0"
+  ></textarea>
+  @if (imgRender()) {
+    <div class="my-3 relative">
+      <img [src]="imgRender()" alt="" class="w-full object-fill h-80" />
+      <button
+        type="button"
+        (click)="restImg(createPostForm)"
+        aria-label="Close"
+        class="absolute right-3 top-3 z-10 grid size-8 place-items-center rounded-full bg-white/90 text-slate-500 shadow-sm transition hover:bg-brand-50 hover:text-brand"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  }
+  <div
+    class="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-3"
+  >
+    <div class="flex items-center gap-2">
+      <label
+        class="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100"
+      >
+        <i class="fa-solid fa-image text-emerald-600"></i>
+        <span class="hidden sm:inline">Photo/video</span>
+        <input
+          type="file"
+          accept="image/*"
+          class="hidden"
+          #fileInput
+          (change)="selectImage($event)"
+        />
+      </label>
+      <button
+        type="button"
+        class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100"
+      >
+        <i class="fa-regular fa-face-smile text-amber-500"></i>
+        <span class="hidden sm:inline">Feeling/activity</span>
+      </button>
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="!bodyInput.value?.trim() && !selectedImage()"
+      class="flex items-center gap-2 rounded-lg bg-brand px-5 py-2 text-sm font-extrabold text-white shadow-sm transition-colors hover:bg-brand-700 disabled:bg-brand-200"
+    >
+      Post <i class="fa-solid fa-paper-plane"></i>
+    </button>
+  </div>
+</form>

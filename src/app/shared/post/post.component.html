@@ -1,0 +1,277 @@
+<article
+  class="group/post overflow-hidden rounded-2xl border border-brand-100 bg-white shadow-sm transition-all duration-300 hover:shadow-md my-6"
+>
+  <!-- Header -->
+  <div class="flex items-center justify-between gap-3 p-4 sm:p-5">
+    <div class="flex min-w-0 items-center gap-3">
+      @if (post().user.photo) {
+        <img
+          [src]="post().user.photo"
+          [alt]="post().user.name"
+          class="size-12 rounded-full border-2 border-brand-100 object-cover"
+        />
+      } @else {
+        <div
+          class="flex size-12 shrink-0 items-center justify-center rounded-full bg-brand-50 text-xl text-brand"
+        >
+          <i class="fa-regular fa-user"></i>
+        </div>
+      }
+
+      <div class="min-w-0">
+        <a
+          [routerLink]="['/profile', post().user._id]"
+          class="block truncate font-bold text-slate-900 transition hover:text-brand"
+        >
+          {{ post().user.name }}
+        </a>
+        <p class="truncate text-sm text-slate-500">@{{ post().user.username }}</p>
+
+        <div class="mt-1 flex items-center gap-2 text-xs text-slate-400">
+          <span [title]="post().createdAt | date: 'EEEE, MMMM d, y, h:mm a'">
+            {{ post().createdAt | timeAgo }}
+          </span>
+          <span>·</span>
+          <span>{{ post().privacy }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- More options -->
+    <div class="relative">
+      <button
+        type="button"
+        (click)="toggleMenu()"
+        aria-label="Post options"
+        aria-haspopup="menu"
+        [attr.aria-expanded]="menuOpen()"
+        class="flex size-9 shrink-0 items-center justify-center rounded-full text-slate-500 transition hover:bg-brand-50 hover:text-brand"
+      >
+        <i class="fa-solid fa-ellipsis"></i>
+      </button>
+
+      @if (menuOpen()) {
+        <div class="fixed inset-0 z-10" (click)="closeMenu()"></div>
+
+        <div
+          role="menu"
+          aria-label="Post actions"
+          class="absolute right-0 top-full z-30 w-56 overflow-hidden rounded-xl border border-brand-100 bg-white p-1.5 shadow-lg"
+        >
+          <button
+            [disabled]="saving()"
+            type="button"
+            role="menuitem"
+            (click)="save(); closeMenu()"
+            [class.bg-brand-50]="saved()"
+            [class.text-brand]="saved()"
+            [class.text-slate-600]="!saved()"
+            class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-brand-50"
+          >
+            <i
+              [class]="
+                saved()
+                  ? 'fa-solid fa-bookmark text-brand'
+                  : 'fa-regular fa-bookmark text-slate-500'
+              "
+              class="w-4 text-center"
+            ></i>
+            <span>{{ saved() ? 'Unsave post' : 'Save post' }}</span>
+          </button>
+
+          @if (isOwner()) {
+            <button
+              type="button"
+              role="menuitem"
+              (click)="startEdit()"
+              class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-slate-700 transition-colors hover:bg-brand-50"
+            >
+              <i class="fa-solid fa-pencil w-4 text-center text-slate-500"></i>
+              <span>Edit post</span>
+            </button>
+
+            <div class="mx-2 my-1 h-px bg-brand-100"></div>
+
+            <button
+              type="button"
+              role="menuitem"
+              (click)="askDelete()"
+              class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-red-600 transition-colors hover:bg-red-50"
+            >
+              <i class="fa-regular fa-trash-can w-4 text-center"></i>
+              <span>Delete post</span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Edit mode -->
+  @if (editing()) {
+    <div class="px-4 pb-4 sm:px-5">
+      <textarea
+        rows="3"
+        [value]="editText()"
+        (input)="onEditInput($event)"
+        (keydown.escape)="cancelEdit()"
+        class="w-full resize-none rounded-xl border border-brand-100 bg-brand-50/40 px-3 py-2 text-sm leading-6 text-slate-800 outline-none focus:border-brand focus:bg-white focus:ring-2 focus:ring-brand/15"
+      ></textarea>
+      <div class="mt-2 flex justify-end gap-2">
+        <button
+          type="button"
+          (click)="cancelEdit()"
+          class="rounded-lg px-3 py-1.5 text-sm font-bold text-slate-600 transition hover:bg-brand-50"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="saveEdit()"
+          [disabled]="!editText().trim() || savingEdit()"
+          class="rounded-lg bg-brand px-3 py-1.5 text-sm font-bold text-white transition hover:bg-brand-600 disabled:opacity-60"
+        >
+          {{ savingEdit() ? 'Saving...' : 'Save' }}
+        </button>
+      </div>
+    </div>
+  }
+
+  <div
+    [routerLink]="detailsMode() ? null : ['/post-details', post()._id]"
+    [class.cursor-pointer]="!detailsMode()"
+  >
+    @if (body() && !editing()) {
+      <div class="px-4 pb-4 sm:px-5">
+        <p class="whitespace-pre-wrap break-words leading-7 text-slate-700">{{ body() }}</p>
+      </div>
+    }
+
+    @if (post().image) {
+      <div class="overflow-hidden bg-slate-50">
+        <img
+          [src]="post().image"
+          [alt]="'Post by ' + post().user.name"
+          class="max-h-[550px] w-full object-contain"
+          loading="lazy"
+        />
+      </div>
+    }
+  </div>
+
+  <!-- Stats -->
+  <div
+    class="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3 text-sm text-slate-500 sm:px-5"
+  >
+    <span>
+      <i class="fa-solid fa-heart mr-1 text-brand"></i>
+      {{ likes().length }} likes
+    </span>
+
+    <div class="flex items-center gap-3">
+      <span>{{ commentsTotal() }} comments</span>
+      <span>{{ post().sharesCount }} shares</span>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="grid grid-cols-3 gap-1 p-2 sm:px-3">
+    <button
+      type="button"
+      (click)="like()"
+      class="flex items-center justify-center gap-2 rounded-xl px-2 py-3 text-sm font-semibold transition hover:bg-brand-50 hover:text-brand"
+      [class]="liked() ? 'text-brand' : 'text-slate-600'"
+    >
+      <i [class]="liked() ? 'fa-solid fa-heart' : 'fa-regular fa-heart'" class="text-base"></i>
+      <span>Like</span>
+    </button>
+
+    <button
+      #commentTrigger
+      type="button"
+      class="flex items-center justify-center gap-2 rounded-xl px-2 py-3 text-sm font-semibold text-slate-600 transition hover:bg-brand-50 hover:text-brand"
+    >
+      <i class="fa-regular fa-comment text-base"></i>
+      <span>Comment</span>
+    </button>
+
+    <button
+      type="button"
+      [disabled]="saving()"
+      [class.bg-brand-50]="saved()"
+      [class.text-brand]="saved()"
+      [class.text-slate-600]="!saved()"
+      (click)="save()"
+      class="flex items-center justify-center gap-2 rounded-xl px-2 py-3 text-sm font-semibold transition hover:bg-brand-50 hover:text-brand"
+      [class]="saved() ? 'text-brand' : 'text-slate-600'"
+    >
+      <i
+        [class]="saved() ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark'"
+        class="text-base"
+      ></i>
+      <span>{{ saved() ? 'Saved' : 'Save' }}</span>
+    </button>
+  </div>
+
+  <!-- Comments -->
+  @if (detailsMode()) {
+    <div class="border-t border-slate-100 p-4 sm:p-5">
+      <app-post-comments
+        [postId]="post()._id"
+        [postOwnerId]="post().user._id"
+        (commentCreated)="extraComments.update((n) => n + 1)"
+        (commentDeleted)="extraComments.update((n) => n - 1)"
+      ></app-post-comments>
+    </div>
+  } @else {
+    @defer (on interaction(commentTrigger)) {
+      <div class="border-t border-slate-100 p-4 sm:p-5">
+        <app-post-comments
+          [postId]="post()._id"
+          [postOwnerId]="post().user._id"
+          (commentCreated)="extraComments.update((n) => n + 1)"
+          (commentDeleted)="extraComments.update((n) => n - 1)"
+        ></app-post-comments>
+      </div>
+    }
+  }
+
+  <!-- Delete modal (Flowbite) -->
+  @if (isOwner()) {
+    <div
+      #deleteModalEl
+      tabindex="-1"
+      aria-hidden="true"
+      class="fixed inset-0 z-50 hidden items-center justify-center overflow-y-auto overflow-x-hidden p-4"
+    >
+      <div class="relative w-full max-w-sm">
+        <div class="rounded-2xl border border-brand-100 bg-white p-5 shadow-xl">
+          <div class="mb-3 grid size-11 place-items-center rounded-full bg-red-50 text-red-500">
+            <i class="fa-regular fa-trash-can"></i>
+          </div>
+
+          <h3 class="text-base font-extrabold text-slate-900">Delete post?</h3>
+          <p class="mt-1 text-sm text-slate-500">This can't be undone.</p>
+
+          <div class="mt-5 flex justify-end gap-2">
+            <button
+              type="button"
+              (click)="cancelDelete()"
+              class="rounded-xl border border-brand-100 px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-brand-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              (click)="confirmDelete()"
+              [disabled]="deleting()"
+              class="rounded-xl bg-red-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-red-600 disabled:opacity-60"
+            >
+              {{ deleting() ? 'Deleting...' : 'Delete' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</article>

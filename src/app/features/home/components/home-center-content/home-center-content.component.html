@@ -1,0 +1,27 @@
+<div class="my-4 space-y-4">
+  @for (post of allPosts(); track post._id) {
+    <app-post [post]="post" (deleted)="onPostDeleted($event)" />
+  }
+
+  @if (isLoading()) {
+    <div class="flex justify-center py-6 text-brand">
+      <i class="fa-solid fa-spinner fa-spin text-xl"></i>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-center text-sm text-red-600">
+      {{ errorMessage() }}
+      <button type="button" (click)="retry()" class="ml-2 font-bold underline">Retry</button>
+    </div>
+  }
+
+  @if (!hasMore() && !isLoading() && allPosts().length) {
+    <p class="py-6 text-center text-sm text-slate-400">
+      <i class="fa-regular fa-circle-check mr-1"></i>
+      You're all caught up
+    </p>
+  }
+
+  <div #sentinel class="h-1"></div>
+</div>
